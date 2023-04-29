@@ -5,7 +5,7 @@ const getAllProductsStatic = async (req, res) => {
     .sort("price")
     .select("name price");
 
-  res.status(200).json({ products, nbHits: products.length });
+  res.status(200).json({ products, nbHits: products.length } );
 };
 
 const getAllProducts = async (req, res) => {
@@ -44,8 +44,7 @@ const getAllProducts = async (req, res) => {
     });
   }
 
-  console.log(queryObject);
-  let result = Product.find(queryObject);
+   let result = Product.find(queryObject);
   //   sort
   if (sort) {
     const sortList = sort.split(",").join(" ");
