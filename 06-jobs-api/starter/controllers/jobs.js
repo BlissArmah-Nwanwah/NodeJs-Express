@@ -8,6 +8,7 @@ const getAllJobs = async (req, res) => {
 };
 
 const getJob = async (req, res) => {
+  console.log(req.params);
   const {
     user: { userId },
     params: { id: jobId },
