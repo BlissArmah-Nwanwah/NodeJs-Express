@@ -47,6 +47,7 @@ const login = async (req, res) => {
 
 const updateUser = async(req,res) => {
   const {email,name,lastName,location} = req.body
+  console.log(req.user);
   if (!email || !name || !lastName || !location) {
     throw new BadRequestError('Please provide all values')
   }
@@ -58,7 +59,7 @@ const updateUser = async(req,res) => {
 
   await user.save()
   const token = user.createJWT()
-  res
+  res 
   .status(StatusCodes.OK)
   .json({
     user: {
