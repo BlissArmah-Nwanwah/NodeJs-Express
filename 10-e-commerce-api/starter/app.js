@@ -8,11 +8,14 @@ const morgan = require('morgan')
 
 // database
 const connectDB = require('./db/connect')
+
+// routers
+const authRouter = require('./routes/authRoutes')
+
 // middleware
 const notFountMiddleware = require('./middleware/not-found')
 const errorHandlerMiddleware = require('./middleware/error-handler')
 
-const authRouter = require('./routes/authRoutes')
 
 app.use(morgan('tiny'))
 app.use(express.json())
