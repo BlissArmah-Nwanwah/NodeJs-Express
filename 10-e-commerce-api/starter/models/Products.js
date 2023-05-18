@@ -6,7 +6,7 @@ const ProductSchema = new mongoose.Schema(
       type: String,
       trim: true,
       required: [true, "Please provide product name"],
-      maxlength: [100, "Name can not be more than 100 characters"],e
+      maxlength: [100, "Name can not be more than 100 characters"],
     },
     price: {
       type: Number,
@@ -30,13 +30,11 @@ const ProductSchema = new mongoose.Schema(
     company: {
       type: String,
       required: [true, "Please provide company"],
-      enum: {
-        value: ["ikea", "liddy", "marcos"],
-        message: "{VALUE} is not supported",
-      },
+      enum: ["ikea", "liddy", "marcos"],
     },
     company: {
       type: [String],
+      default:['#222'],
       required: true,
     },
     featured: {
@@ -65,4 +63,4 @@ const ProductSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Product",ProductSchema);
+module.exports = mongoose.model("Product", ProductSchema);
