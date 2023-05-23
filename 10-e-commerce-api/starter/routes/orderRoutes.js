@@ -1,5 +1,5 @@
 const express = require("express");
-const router = express.router();
+const router = express.Router();
 const {
   authenticateUser,
   authorizePermissions,
@@ -15,11 +15,15 @@ const {
 
 router
   .route("/")
-  .get(authenticateUser, getAllOrders)
   .post(authenticateUser, createOrder)
-  .patch(authenticateUser, updateOrder);
+  .get(authenticateUser, authorizePermissions("admin"), getAllOrders);
+
 router.route("/showAllMyOrders").get(authenticateUser, getCurrentUserOrders);
 
-router.route("/:id").get(authenticateUser, getSingleOrder);
+router
+  .route("/:id")
+  .get(authenticateUser, getSingleOrder)
+  .patch(authenticateUser, updateOrder);
 
 module.exports = router;
+ 
