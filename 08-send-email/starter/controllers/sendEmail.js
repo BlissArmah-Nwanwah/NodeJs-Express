@@ -25,16 +25,16 @@ const sendEmailEthereal = async (req, res) => {
 
 const sendEmail = async (req, res) => {
   sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+  const { name, number, email, message } = req.body;
   const msg = {
-    to: "bliss.armah-nwanwah@amalitech.com", // Change to your recipient
+    to: "blissarmah8@gmail.com", // Change to your recipient
     from: "blissarmah8@gmail.com", // Change to your verified sender
-    subject: "Sending with SendGrid is Fun",
-    text: "and easy to do anywhere, even with Node.js",
-    html: "<strong>and easy to do anywhere, even with Node.js</strong>",
-  };  
-  const info = await sgMail.send(msg)
-    res.json(info)
+    subject: "Contact Form Submission From Portfolio Website",
+    text: `Name: ${name}\n Email: ${email}\n Number: ${number}\n\nMessage: ${message}`,
+    html: `<p><strong>Name:</strong> ${name}</p><p><strong>Email:</strong> ${email}</p><p><strong>Number:</strong> ${number}</p><p><strong>Message:</strong> ${message}</p>`,
+  };
+  const info = await sgMail.send(msg);
+  res.json(info);
 };
-
 
 module.exports = sendEmail;
