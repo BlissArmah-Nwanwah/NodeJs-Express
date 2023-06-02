@@ -24,7 +24,7 @@ const OrderSchema = mongoose.Schema(
     },
     subtotal: {
       type: Number,
-      required: true,
+      required: true,z
     },
     total: {
       type: Number,
