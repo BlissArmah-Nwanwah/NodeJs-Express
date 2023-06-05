@@ -16,7 +16,6 @@ const register = async (req, res) => {
     throw new CustomError.BadRequestError("Email already exists");
   }
 
-  
   // first registered user is an admin
   const isFirstAccount = (await User.countDocuments({})) === 0;
   const role = isFirstAccount ? "admin" : "user";
@@ -31,12 +30,13 @@ const register = async (req, res) => {
     verificationToken,
   });
 
-  const origin = 'http://localhost:3000'
+  const origin = "http://localhost:3000";
 
   await sendVerificationEmail({
     name: user.name,
     email: user.email,
-    verificationToken: user.verificationToken,origin
+    verificationToken: user.verificationToken,
+    origin,
   });
   // send verification token back only while testing in postman!!!
   res.status(StatusCodes.CREATED).json({
