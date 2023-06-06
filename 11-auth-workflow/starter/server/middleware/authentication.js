@@ -3,7 +3,8 @@ const { isTokenValid } = require("../utils");
 const Token = require('../models/Token')
 const {attachCookiesToResponse} = require('../utils')
 
-const authenticateUser = async (req, res, next) => {
+const authenticateUser = async (req, res, next) => {  
+  console.log(req.signedCookies);
   const { refreshToken, accessToken } = req.signedCookies;
 
   try {
@@ -37,7 +38,7 @@ const authorizePermissions = (...roles) => {
       throw new CustomError.UnauthorizedError(
         "Unauthorized to access this route"
       );
-    }
+    } 
     next();
   };
 };

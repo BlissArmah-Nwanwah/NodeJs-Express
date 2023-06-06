@@ -27,6 +27,7 @@ function Login() {
     const loginUser = { email, password };
     try {
       const { data } = await axios.post(`/api/v1/auth/login`, loginUser);
+      console.log(data);
       setValues({ name: '', email: '', password: '' });
       showAlert({
         text: `Welcome, ${data.user.name}. Redirecting to dashboard...`,

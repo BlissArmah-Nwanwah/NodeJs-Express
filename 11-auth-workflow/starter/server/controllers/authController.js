@@ -86,18 +86,18 @@ const login = async (req, res) => {
   // create refresh token
   let refreshToken = "";
   // check for existing token
-  const existingToken = await Token.findOne({user:user._id})
+  const existingToken = await Token.findOne({ user: user._id });
 
   if (existingToken) {
-    const {isValid} = existingToken
+    const { isValid } = existingToken;
     if (!isValid) {
-    throw new CustomError.UnauthenticatedError("Invalid Credentials");
+      throw new CustomError.UnauthenticatedError("Invalid Credentials");
     }
-    refreshToken = existingToken.refreshToken
-  attachCookiesToResponse({ res, user: tokenUser, refreshToken });
-  res.status(StatusCodes.OK).json({ user: tokenUser });
+    refreshToken = existingToken.refreshToken;
+    attachCookiesToResponse({ res, user: tokenUser, refreshToken });
+    res.status(StatusCodes.OK).json({ user: tokenUser });
 
-    return 
+    return;
   }
 
   refreshToken = crypto.randomBytes(40).toString("hex");
@@ -113,16 +113,36 @@ const login = async (req, res) => {
 };
 
 const logout = async (req, res) => {
-  res.cookie("token", "logout", {
+  await Token.findOneAndDelete({ user: req.user.userId });
+
+  res.cookie("accessToken", "logout", {
     httpOnly: true,
-    expires: new Date(Date.now() + 1000),
+    expires: new Date(Date.now()),
+  });
+  res.cookie("refreshToken", "logout", {
+    httpOnly: true,
+    expires: new Date(Date.now()),
   });
   res.status(StatusCodes.OK).json({ msg: "user logged out!" });
 };
 
+const forgotPassword = async (req, res) => {
+  const {email} = req.body;
+  if (!email) {
+    throw new CustomError.BadRequestError("Email already exists");
+  }
+
+  res.status(StatusCodes.OK).json({ msg: "Please check your email for reset password link."});
+};
+
+const resetPassword = async (req, res) => {
+  res.send("reset Password");
+};
 module.exports = {
   register,
   login,
   logout,
   verifyEmail,
+  forgotPassword,
+  resetPassword,
 };
