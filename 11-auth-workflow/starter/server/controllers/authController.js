@@ -6,6 +6,7 @@ const {
   attachCookiesToResponse,
   createTokenUser,
   sendVerificationEmail,
+  sendResetPasswordEmail,
 } = require("../utils");
 const crypto = require("crypto");
 
@@ -127,15 +128,52 @@ const logout = async (req, res) => {
 };
 
 const forgotPassword = async (req, res) => {
-  const {email} = req.body;
+  const { email } = req.body;
   if (!email) {
-    throw new CustomError.BadRequestError("Email already exists");
+    throw new CustomError.BadRequestError("Please enter a valid email");
   }
 
-  res.status(StatusCodes.OK).json({ msg: "Please check your email for reset password link."});
+  const user = await User.findOne({ email });
+  if (user) {
+    const passwordToken = crypto.randomBytes(70).toString("hex");
+    // send email
+    const origin = "http://localhost:3000";
+    await sendResetPasswordEmail({
+      name: user.name,
+      email: user.email,
+      token: passwordToken,
+      origin,
+    });
+
+    const tenMinutes = 1000 * 60 * 10;
+    const passwordTokenExpirationDate = new Date(Date.now() + tenMinutes);
+
+    user.passwordToken = passwordToken;
+    user.passwordTokenExpirationDate = passwordTokenExpirationDate;
+    await user.save();
+  }
+
+  res
+    .status(StatusCodes.OK)
+    .json({ msg: "Please check your email for reset password link." });
 };
 
 const resetPassword = async (req, res) => {
+  const {token,email,password} = req.body;
+  if (!token || !email || !password) {
+    throw new CustomError.BadRequestError("Please provide all values.");
+  }
+  const user = await User.findOne({email})
+
+  if(user){
+    const currentDate = new Date()
+    if(user.passwordToken === token && user.passwordTokenExpirationDate > currentDate){
+      user.password = password
+      user.passwordToken = null;
+      user.passwordTokenExpirationDate = null
+      await user.save()
+    }
+  }
   res.send("reset Password");
 };
 module.exports = {
